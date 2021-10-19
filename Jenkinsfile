@@ -1,8 +1,10 @@
 pipeline {
-	agent any 
+	//agent any 
+	agent { docker { image 'maven:3.6.3'} }
 	stages {
 		stage('Build') {
 			steps {
+				sh 'mvn --version'
 				echo "Build"
 			}
 		}
@@ -27,5 +29,6 @@ pipeline {
 		failure {
 			echo 'Run Failure'
 		}
+		//changed (changed status compared to previous run) or unstable (Build succeeded but test failed)
 	}
 }
