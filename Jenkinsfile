@@ -35,6 +35,11 @@ pipeline {
 				sh 'mvn failsafe:integration-test failsafe:verify'
 			}
 		}
+		stage('Package') {
+			steps {
+				sh 'mvn package -DskipTests'
+			}
+		}
 		stage('Build Docker Image') {
 			steps {
 				//"docker build -t architkhanna/currency-exchange-pipeline-image:$env.BUILD_TAG"
@@ -46,8 +51,11 @@ pipeline {
 		stage('Push Docker Image') {
 			steps {
 				script {
-					dockerImage.push();
-					dockerImage.push('latest');
+					docker.withRegistry('', 'dockerhub') {
+
+						dockerImage.push();
+						dockerImage.push('latest');
+					}
 				}
 			}
 		}
